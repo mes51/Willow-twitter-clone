@@ -8,7 +8,7 @@ class DBAccessor
     def initialize()
         @db = Mysql::new(DBConfig::DB_SERVER, DBConfig::DB_USER, DBConfig::DB_PASSWORD)
         @db.query("set character set utf8")
-        @db.query("use willow")
+        @db.query("use " + DBConfig::DB_NAME)
     end
 
     def query(query, data = nil)

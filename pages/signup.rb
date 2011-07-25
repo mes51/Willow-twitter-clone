@@ -48,7 +48,7 @@ class SignUp
 
     def create_captcha()
         c = CAPTCHA::Web.new
-        c.font = "/usr/share/fonts/bitstream-vera/Vera.ttf"
+        c.font = "/usr/share/fonts/bitstream-vera/VeraSe.ttf"
         c.image_dir = IncludePath::PATH + "public/captcha"
         c.font_size = 24
         c.rotation = 30
