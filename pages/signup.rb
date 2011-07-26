@@ -3,8 +3,9 @@ require 'captcha'
 
 require IncludePath::PATH + "lib/db/user.rb"
 require IncludePath::PATH + "lib/gen_sid.rb"
+require IncludePath::PATH + "lib/page_base.rb"
 
-class SignUp
+class SignUp < PageBase
     def execute(params, request, response, env)
         post = request.POST
         error = ""
@@ -59,12 +60,11 @@ class SignUp
         c.image
         return c
     end
+
+    def no_cache
+        return true
+    end
 end
 
 class DynamicLoader < SignUp
-    def initialize()
-        @login_only = false
-    end
-
-    attr_reader :login_only
 end

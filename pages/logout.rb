@@ -1,4 +1,6 @@
-class Logout
+require IncludePath::PATH + "lib/page_base.rb"
+
+class Logout < PageBase
     def execute(params, request, response, env)
         request.session[Const::LOGIN_DATA] = ""
         request.session_options[:id] = ""
@@ -8,9 +10,4 @@ class Logout
 end
 
 class DynamicLoader < Logout
-    def initialize()
-        @login_only = false
-    end
-
-    attr_reader :login_only
 end

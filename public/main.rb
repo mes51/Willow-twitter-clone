@@ -7,6 +7,7 @@ require 'rack/response'
 require '../config/include_path.rb'
 require '../lib/const.rb'
 require '../lib/template.rb'
+require '../lib/util.rb'
 
 class WillowApp
     def call(env)
@@ -40,6 +41,20 @@ class WillowApp
 
         require require_file
         loader = DynamicLoader.new
+        
+        if (loader.login_only)
+            if (!Util.check_login(request))
+                response.redirect("/login/")
+                return
+            end
+        end
+
+        if (loader.no_cache)
+            response.header["Pragma"] = "no-cache"
+            response.header["Cache-Control"] = "no-cache"
+            response.header["Expires"] = "0"
+        end
+        
         loader.execute(params, request, response, env)
     end
 end

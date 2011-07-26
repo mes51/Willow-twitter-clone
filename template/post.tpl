@@ -17,8 +17,13 @@
     <body>
         <form method="post" action="/post/post_willow/">
             <textarea id="willow" name="willow" cols="20" rows="4" onkeyup="checkWillow()" onchange="checkWillow()"></textarea><br>
-            <span id="status"><span><br>
+            <span id="status">
+                <script type="text/javascript">
+                    checkWillow();
+                </script>
+            </span><br>
             <input id="post" name="post" type="submit" value="投稿" disabled="disabled"/>
+            <input id="token" name="token" type="hidden" value="{#token#}" />
         </form>
     </body>
 </html>

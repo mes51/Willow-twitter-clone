@@ -1,7 +1,8 @@
 require IncludePath::PATH + "lib/db/user.rb"
 require IncludePath::PATH + "lib/gen_sid.rb"
+require IncludePath::PATH + "lib/page_base.rb"
 
-class Login
+class Login < PageBase
     def execute(params, request, response, env)
         error = ""
         if (params[1] == Const::NEW_USER)
@@ -46,15 +47,10 @@ class Login
         user.delete_flag = 0
         user = user.find
         request.session_options[:id] = GenerateSessionID.generate
-        request.session[Const::LOGIN_DATA] = { "user_name" => id, "screen_name" => user[0].screen_name }
+        request.session[Const::LOGIN_DATA] = { "user_name" => id, "screen_name" => user[0].screen_name, "id" => user[0].id }
         response.redirect("/home/")
     end
 end
 
 class DynamicLoader < Login
-    def initialize()
-        @login_only = false
-    end
-
-    attr_reader :login_only
 end
