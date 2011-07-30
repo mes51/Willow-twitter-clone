@@ -54,6 +54,10 @@ class WillowApp
             response.header["Cache-Control"] = "no-cache"
             response.header["Expires"] = "0"
         end
+
+        if (loader.clear_token && request.session_options[:id].length > 0)
+            request.session[Const::POST_TOKEN] = ""
+        end
         
         loader.execute(params, request, response, env)
     end

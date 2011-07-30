@@ -1,10 +1,40 @@
 require 'cgi'
 
 class SimpleTemplate
+    class SimpleTemplate::TemplateElement
+        attr_accessor :marker
+        attr_accessor :type
+        attr_accessor :value
+        attr_accessor :include_template
+
+        TYPE_INCLUDE = "include"
+        TYPE_ARRAY_HASH = "hash_array"
+        TYPE_NORMAL = "normal"
+        TYPE_NONE = "none"
+
+        def initialize
+            @type = TYPE_NONE
+        end
+
+        def copy(replace)
+            result = SimpleTemplate::TemplateElement.new
+            result.marker = @marker.dup
+            result.type = @type.dup
+            if (@include_template)
+                result.include_template = @include_template.copy(replace)
+            end
+            if (replace == true)
+                result.value = Marshal.load(Marshal.dump(@value))
+            end
+            return result
+        end
+    end
+
     def initialize(file)
         @marker = []
         @element = {}
-        @array_include = {}
+        @include_element = []
+        include_file = []
         if (file != nil && Find.find(file))
             fp = open(file)
             @base_text = fp.read
@@ -16,23 +46,31 @@ class SimpleTemplate
             marker_text.each do |text|
                 temp = text[start, text.length - trim_length]
                 split = temp.split(":")
+                e = SimpleTemplate::TemplateElement.new
                 if (split.length > 1)
                     case split[0]
                         when "include" then
-                            include_temp = SimpleTemplate.new(IncludePath::TEMPLATE_PATH + split[1])
-                            @base_text = @base_text.gsub("{#" + temp + "#}", include_temp.base_text)
-                            include_temp.get_marker_ref.each do |m|
-                                add_marker(m)
+                            file = IncludePath::TEMPLATE_PATH + split[1]
+                            unless (include_file.index(include_file))
+                                e.type = SimpleTemplate::TemplateElement::TYPE_INCLUDE
+                                e.marker = temp
+                                e.include_template = SimpleTemplate.new(file)
+                                include_file.push(file)
                             end
                         when "hash_array" then
+                            e.type = SimpleTemplate::TemplateElement::TYPE_ARRAY_HASH
+                            e.marker = split[2]
+                            e.include_template = SimpleTemplate.new(IncludePath::TEMPLATE_PATH + split[1])
                             @base_text = @base_text.gsub("{#" + temp + "#}", "{#" + split[2] + "#}")
-                            add_marker(split[2], "", SimpleTemplate.new(IncludePath::TEMPLATE_PATH + split[1]))
                         else
-                            add_marker(temp)
+                            e.type = SimpleTemplate::TemplateElement::TYPE_NORMAL
+                            e.marker = temp
                     end
                 else
-                    add_marker(temp)
+                    e.type = SimpleTemplate::TemplateElement::TYPE_NORMAL
+                    e.marker = temp
                 end
+                add(e)
             end
             @base_text.force_encoding("utf-8")
         end
@@ -45,14 +83,20 @@ class SimpleTemplate
         result.set_base_text(@base_text.dup)
         result.set_marker(Marshal.load(Marshal.dump(@marker)))
         element = {}
+        include_element = []
         if (replace == true)
             element = Marshal.load(Marshal.dump(@element))
+            include_element = Marshal.load(Marshal.dump(@include_element))
         else
-            @marker.each do |m|
-                element.store(m, "")
+            @element.each do |k, v|
+                element.store(k, v.copy(replace))
+            end
+            @include_element.each do |v|
+                include_element.puch(v.copy(replace))
             end
         end
         result.set_element(element)
+        result.set_include_element(include_element)
         return result
     end
 
@@ -62,10 +106,13 @@ class SimpleTemplate
                 unless (no_escape)
                     value = CGI.escapeHTML(value)
                 end
-                @element[key] = value
+                @element[key].value = value
             else
-                @element[key] = value
+                @element[key].value = value
             end
+        end
+        @include_element.each do |e|
+            e.include_template.replace(key, value, no_escape)
         end
     end
 
@@ -79,8 +126,21 @@ class SimpleTemplate
     end
     protected :set_element
 
+    def set_include_element(value)
+        @include_element = value
+    end
+    protected :set_include_element
+
     def get_marker
-        return Marshal.load(Marshal.dump(@marker))
+        result = Marshal.load(Marshal.dump(@marker))
+        @include_element.each do |i|
+            i.include_template.get_marker.each do |m|
+                unless (result.index(m))
+                    result.push(m)
+                end
+            end
+        end
+        return result
     end
 
     def get_marker_ref
@@ -93,36 +153,41 @@ class SimpleTemplate
     end
     protected :set_marker
 
-    def add_marker(key, value = "", array = nil)
-        unless (@element[key])
-            @marker.push(key)
-            @element.store(key, value)
-            if (array)
-                @array_include.store(key, array)
+    def add(e)
+        unless (@element[e.marker])
+            if (e.type != SimpleTemplate::TemplateElement::TYPE_INCLUDE)
+                @marker.push(e.marker)
+                @element.store(e.marker, e)
+            else
+                @include_element.push(e)
             end
         end
     end
-    private :add_marker
+    private :add
 
     def to_s
         result = @base_text.dup
-        @element.each do |key, value|
+        @element.each do |k, v|
             value_text = ""
-            if (@array_include[key])
-                if (value.class.to_s == "Array")
-                    value.each do |v|
-                        temp = @array_include[key].copy(false)
-                        temp.get_marker_ref.each do |m|
-                            temp.replace(m, v[m])
+            case v.type
+                when SimpleTemplate::TemplateElement::TYPE_ARRAY_HASH
+                    if (v.value.class.to_s == "Array")
+                        v.value.each do |vv|
+                            temp = v.include_template.copy(false)
+                            temp.get_marker_ref.each do |m|
+                                temp.replace(m, vv[m])
+                            end
+                            value_text += temp.to_s
                         end
-                        value_text += temp.to_s
                     end
-                end
-            else
-                value_text = value.to_s
+                when SimpleTemplate::TemplateElement::TYPE_NORMAL
+                    value_text = v.value.to_s
             end
             value_text.force_encoding("utf-8")
-            result = result.gsub("{#" + key + "#}", value_text)
+            result = result.gsub("{#" + k + "#}", value_text)
+        end
+        @include_element.each do |v|
+            result = result.gsub("{#" + v.marker + "#}", v.include_template.to_s)
         end
         return result
     end

@@ -8,11 +8,7 @@
 {#include:common/willow.tpl#}
             </div>
             <div class="bottom_box">
-                <div style="float:left;">
-                    <a href="/post/">投稿</a>
-                </div>
                 <div style="float:right;">
-                    <a href="/setting/">設定</a>　<a href="/logout/">ログアウト</a>
                 </div>
             </div>
         </div>

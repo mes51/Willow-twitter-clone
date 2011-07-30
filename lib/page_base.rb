@@ -6,4 +6,8 @@ class PageBase
     def no_cache
         return false
     end
+
+    def clear_token
+        return true
+    end
 end

@@ -1,0 +1,47 @@
+.willow
+{
+    padding:2em 0.3em 0;
+}
+
+.willow_block
+{
+    font-size:22pt;
+    min-height:500px;
+    max-height:500px;
+    height:500px;
+    min-width:1020px;
+    max-width:1020px;
+    width:1020px;
+    border:thin solid black;
+    writing-mode:tb-rl;
+}
+
+.willow_line1
+{
+
+}
+
+.willow_line2
+{
+    padding-left:2em;
+    margin-top:2em;
+}
+
+.willow_line3
+{
+    padding-left:6em;
+    margin-top:6em;
+}
+
+.willow_title
+{
+    padding:0.5em 0.5em 0;
+    font-size:20pt;
+}
+
+.willow_user
+{
+    padding-left:12em;
+    margin-top:12em;
+    font-size:12pt;
+}
