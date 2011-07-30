@@ -52,6 +52,16 @@ class DataObject
             data.concat(j.table.get_data)
         end
 
+        if (count > Const::INT_MAX || count < 0)
+            count = 0
+        else
+            if (start > Const::INT_MAX - 1)
+                start = Const::INT_MAX - 1
+            elsif (start < 0)
+                start = 0
+            end
+        end
+
         result = nil
         if data.length > 0
             result = @@db.query(get_select_query(count, start), data)
@@ -76,6 +86,32 @@ class DataObject
         end
 
         return ret_val
+    end
+
+    def get_count(count = 0, start = 0)
+         data = get_data
+        @join_tables.each do |j|
+            data.concat(j.table.get_data)
+        end
+
+        if (count > Const::INT_MAX || count < 0)
+            count = 0
+        else
+            if (start > Const::INT_MAX - 1)
+                start = Const::INT_MAX - 1
+            elsif (start < 0)
+                start = 0
+            end
+        end
+
+        result = nil
+        if data.length > 0
+            result = @@db.query(get_select_query(count, start, "count(*) as count"), data)
+        else
+            result = @@db.query(get_select_query(count, start, "count(*) as count"))
+        end
+
+        return result.data[0][0]
     end
 
     def left_join(da_obj, base_column, join_column)
@@ -124,8 +160,8 @@ class DataObject
         @@db.query(query, data)
     end
 
-    def get_select_query(count, start)
-        query = "select * from " + get_table_name
+    def get_select_query(count, start, get_column = "*")
+        query = "select " + get_column + " from " + get_table_name
 
         limit = "";
         if (count > 0)

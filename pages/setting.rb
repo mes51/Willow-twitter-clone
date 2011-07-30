@@ -31,6 +31,7 @@ class Setting < PageBase
         request.session[Const::POST_TOKEN] = token
         template = SimpleTemplate.new(IncludePath::TEMPLATE_PATH + "setting.tpl")
         template.replace("css", [{ "file" => "setting.css"}])
+        template.replace("page_title", "設定")
         template.replace("screen_name", request.session[Const::LOGIN_DATA]["screen_name"])
         template.replace("token", token)
         response.write(template.to_s)

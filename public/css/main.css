@@ -36,3 +36,9 @@ a:active
 {
     padding-top:1em;
 }
+
+.old_post_link
+{
+    float:right;
+    padding:1em 0;
+}

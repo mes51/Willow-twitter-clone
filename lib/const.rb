@@ -6,6 +6,7 @@ module Const
     POST_TOKEN = "post_token"
     CHANGE_SETTING = "change_setting"
 
+    INT_MAX = 2147483647
     SHOW_WILLOW_COUNT = 6
     TOKEN_LENGTH = 16
 end

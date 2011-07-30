@@ -10,6 +10,7 @@ class SimpleTemplate
         TYPE_INCLUDE = "include"
         TYPE_ARRAY_HASH = "hash_array"
         TYPE_NORMAL = "normal"
+        TYPE_LOAD = "load"
         TYPE_NONE = "none"
 
         def initialize
@@ -33,6 +34,7 @@ class SimpleTemplate
     def initialize(file)
         @marker = []
         @element = {}
+        @other_element = {}
         @include_element = []
         include_file = []
         if (file != nil && Find.find(file))
@@ -62,6 +64,10 @@ class SimpleTemplate
                             e.marker = split[2]
                             e.include_template = SimpleTemplate.new(IncludePath::TEMPLATE_PATH + split[1])
                             @base_text = @base_text.gsub("{#" + temp + "#}", "{#" + split[2] + "#}")
+                        when "load" then
+                            e.type = SimpleTemplate::TemplateElement::TYPE_LOAD
+                            e.marker = split[1]
+                            @base_text = @base_text.gsub("{#" + temp + "#}", "{#" + split[1] + "#}")
                         else
                             e.type = SimpleTemplate::TemplateElement::TYPE_NORMAL
                             e.marker = temp
@@ -84,9 +90,11 @@ class SimpleTemplate
         result.set_marker(Marshal.load(Marshal.dump(@marker)))
         element = {}
         include_element = []
+        other_element = {}
         if (replace == true)
             element = Marshal.load(Marshal.dump(@element))
             include_element = Marshal.load(Marshal.dump(@include_element))
+            other_element = Marshal.load(Marshal.dump(@other_element))
         else
             @element.each do |k, v|
                 element.store(k, v.copy(replace))
@@ -97,19 +105,18 @@ class SimpleTemplate
         end
         result.set_element(element)
         result.set_include_element(include_element)
+        result.set_other_element(other_element)
         return result
     end
 
     def replace(key, value, no_escape = false)
+        if (value.class.to_s == "String" && !no_escape)
+            value = CGI.escapeHTML(value)
+        end
         if (@element[key])
-            if (value.class.to_s == "String")
-                unless (no_escape)
-                    value = CGI.escapeHTML(value)
-                end
-                @element[key].value = value
-            else
-                @element[key].value = value
-            end
+            @element[key].value = value
+        else
+            @other_element.store(key, value)
         end
         @include_element.each do |e|
             e.include_template.replace(key, value, no_escape)
@@ -130,6 +137,11 @@ class SimpleTemplate
         @include_element = value
     end
     protected :set_include_element
+
+    def set_other_element(value)
+        @other_element = value
+    end
+    protected :set_other_element
 
     def get_marker
         result = Marshal.load(Marshal.dump(@marker))
@@ -170,7 +182,7 @@ class SimpleTemplate
         @element.each do |k, v|
             value_text = ""
             case v.type
-                when SimpleTemplate::TemplateElement::TYPE_ARRAY_HASH
+                when SimpleTemplate::TemplateElement::TYPE_ARRAY_HASH then
                     if (v.value.class.to_s == "Array")
                         v.value.each do |vv|
                             temp = v.include_template.copy(false)
@@ -180,8 +192,19 @@ class SimpleTemplate
                             value_text += temp.to_s
                         end
                     end
-                when SimpleTemplate::TemplateElement::TYPE_NORMAL
+                when SimpleTemplate::TemplateElement::TYPE_NORMAL then
                     value_text = v.value.to_s
+                when SimpleTemplate::TemplateElement::TYPE_LOAD then
+                    if (v.value)
+                        template = SimpleTemplate.new(IncludePath::TEMPLATE_PATH + v.value)
+                        @element.each do |tk, tv|
+                            template.replace(tk, tv)
+                        end
+                        @other_element.each do |tk, tv|
+                            template.replace(tk, tv)
+                        end
+                        value_text = template.to_s
+                    end
             end
             value_text.force_encoding("utf-8")
             result = result.gsub("{#" + k + "#}", value_text)

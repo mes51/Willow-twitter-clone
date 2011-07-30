@@ -41,6 +41,8 @@ class SignUp < PageBase
         response.header["Expires"] = "0"
         captcha = create_captcha
         template = SimpleTemplate.new(IncludePath::TEMPLATE_PATH + "signup.tpl")
+        template.replace("css", [{ "file" => "setting.css" }])
+        template.replace("page_title", "アカウント作成")
         template.replace("captcha_img", "/" + Const::CAPTCHA_DIR_NAME + "/" + captcha.file_name)
         template.replace("captcha_digest", captcha.digest)
         template.replace("error", error)

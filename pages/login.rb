@@ -29,24 +29,14 @@ class Login < PageBase
             end
         end
 
-        user = User.new
-        user.delete_flag = 0
-        willow = Willow.new
-        willow.delete_flag = 0
-        willow.order_by("post_time", "desc")
-        willow.left_join(user, "user_id", "id")
-
-        willow_array = []
-        willow.find(Const::SHOW_WILLOW_COUNT).each do |w|
-            split = w[0].text.split("\n")
-            willow_array.push({ "willow_line1" => split[0], "willow_line2" => split[1], "willow_line3" => split[2], "willow_user" => w[1].user_name, "willow_screen" => w[1].screen_name })
-        end
+        willow_array = Util.get_willow(nil, Const::SHOW_WILLOW_COUNT)
 
         template = SimpleTemplate.new(IncludePath::TEMPLATE_PATH + "login.tpl")
         template.replace("error", error)
         template.replace("willow_title", "みんなの川柳")
         template.replace("willow", willow_array)
         template.replace("css", [{ "file" => "willow.css"}])
+        template.replace("page_title", "ログイン")
         response.write(template.to_s)
     end
 

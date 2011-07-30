@@ -22,6 +22,7 @@ class Post < PageBase
         token = generate_token
         request.session[Const::POST_TOKEN] = token
         template = SimpleTemplate.new(IncludePath::TEMPLATE_PATH + "post.tpl")
+        template.replace("page_title", "投稿")
         template.replace("token", token)
         response.write(template.to_s)
     end

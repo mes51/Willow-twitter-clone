@@ -55,7 +55,7 @@ class WillowApp
             response.header["Expires"] = "0"
         end
 
-        if (loader.clear_token && request.session_options[:id].length > 0)
+        if (loader.clear_token && request.session_options[:id] && request.session_options[:id].length > 0)
             request.session[Const::POST_TOKEN] = ""
         end
         
