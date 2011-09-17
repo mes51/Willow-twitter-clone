@@ -1,5 +1,6 @@
 require IncludePath::PATH + "lib/db/user.rb"
 require IncludePath::PATH + "lib/db/willow.rb"
+require IncludePath::PATH + "lib/convert_jp_num.rb"
 
 module Util
     def self.check_login(request)
@@ -24,8 +25,7 @@ module Util
         if (user_name.length > 0)
             willow_array = []
             willow.find(count + margin, limit_start).each do |w|
-                split = w.text.split("\n")
-                willow_array.push({ "willow_line1" => split[0], "willow_line2" => split[1], "willow_line3" => split[2], "willow_user" => user_name, "willow_screen" => screen_name })
+              willow_array.push(self.get_template_array(w, user_name, screen_name))
             end
         else
             user = User.new
@@ -34,8 +34,7 @@ module Util
 
             willow_array = []
             willow.find(count + margin, limit_start).each do |w|
-                split = w[0].text.split("\n")
-                willow_array.push({ "willow_line1" => split[0], "willow_line2" => split[1], "willow_line3" => split[2], "willow_user" => w[1].user_name, "willow_screen" => w[1].screen_name })
+              willow_array.push(self.get_template_array(w[0], w[1].user_name, w[1].screen_name))
             end
         end
 
@@ -44,5 +43,33 @@ module Util
         else
             return willow_array
         end
+    end
+
+    def self.get_willow_by_id(willow_id)
+      willow = Willow.new
+      willow.id = willow_id
+      willow.delete_flag = 0
+      willow_array = willow.find
+
+      if willow_array.length > 0
+        user = User.new
+        user.id = willow_array[0].user_id
+        user.delete_flag = 0
+        user_array = user.find
+
+        if user_array.length > 0
+          self.get_template_array(willow_array[0], user_array[0].user_name, user_array[0].screen_name)
+        end
+      end
+    end
+
+    def self.get_template_array(w, user_name, screen_name)
+      split = w.text.split("\n")
+      time =  Convert.to_jp_num(w.post_time.year, false) + "年 " + Convert.to_jp_num(w.post_time.month, true) + "月 " +
+        Convert.to_jp_num(w.post_time.day, true) + "日 " + Convert.to_jp_num(w.post_time.hour, false) + "時 " + Convert.to_jp_num(w.post_time.minute, false) + "分"
+
+      { "willow_line1" => split[0], "willow_line2" => split[1], "willow_line3" => split[2],
+        "willow_user" => user_name, "willow_screen" => screen_name, "willow_post_time" => time,
+        "willow_perm" => w.id }
     end
 end

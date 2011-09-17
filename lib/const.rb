@@ -7,6 +7,6 @@ module Const
     CHANGE_SETTING = "change_setting"
 
     INT_MAX = 2147483647
-    SHOW_WILLOW_COUNT = 6
+    SHOW_WILLOW_COUNT = 5
     TOKEN_LENGTH = 16
 end

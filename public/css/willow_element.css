@@ -1,0 +1,41 @@
+.willow
+{
+    padding:2em 0.25em 0;
+}
+
+.willow_line1
+{
+
+}
+
+.willow_line2
+{
+    padding-left:2em;
+    margin-top:2em;
+}
+
+.willow_line3
+{
+    padding-left:6em;
+    margin-top:6em;
+}
+
+.willow_title
+{
+    padding:0.5em 0.5em 0;
+    font-size:20pt;
+}
+
+.willow_user
+{
+    padding-left:12em;
+    margin-top:12em;
+    font-size:12pt;
+}
+
+.willow_post
+{
+  padding-left:22em;
+  margin-top:22em;
+  font-size:8pt;
+}
