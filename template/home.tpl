@@ -4,6 +4,7 @@
     </head>
     <body>
         <div class="outer_box">
+{#include:common/search_box.tpl#}
             <div class="old_post_link">
                 {#load:old_post#}
             </div>

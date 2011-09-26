@@ -38,6 +38,8 @@ class UserInfo < PageBase
 
         template = SimpleTemplate.new(IncludePath::TEMPLATE_PATH + "user.tpl")
         template.replace("css", [{ "file" => "willow.css"}])
+        template.replace("js", [{ "js_file" => "search.js" }])
+        template.replace("user_name", user_name)
         template.replace("page_title", screen_name + "(@" + user_name + ")の川柳")
         template.replace("willow_title", user.screen_name + "の川柳")
         template.replace("willow", willow_array)

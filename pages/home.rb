@@ -12,7 +12,7 @@ class Home < PageBase
             limit_start = params[1].to_i
         end
 
-        willow_array = Util.get_willow(request.session[Const::LOGIN_DATA]["id"], Const::SHOW_WILLOW_COUNT, 1, limit_start, user_name, screen_name)
+        willow_array = Util.get_friend_willow(request.session[Const::LOGIN_DATA]["id"], Const::SHOW_WILLOW_COUNT, 1, limit_start)
 
         exists_old = willow_array.length > Const::SHOW_WILLOW_COUNT
         if (exists_old)
@@ -21,10 +21,10 @@ class Home < PageBase
 
         willow = Willow.new
         willow.user_id = request.session[Const::LOGIN_DATA]["id"]
-        response.write(willow.get_count.to_s)
 
         template = SimpleTemplate.new(IncludePath::TEMPLATE_PATH + "home.tpl")
-        template.replace("css", [{ "file" => "willow.css"}])
+        template.replace("css", [{ "file" => "willow.css" }])
+        template.replace("js", [{ "js_file" => "search.js" }])
         template.replace("page_title", "ホーム")
         template.replace("willow_title", screen_name + "の川柳")
         template.replace("willow", willow_array)

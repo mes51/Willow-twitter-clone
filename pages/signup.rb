@@ -2,6 +2,7 @@ gem 'captcha'
 require 'captcha'
 
 require IncludePath::PATH + "lib/db/user.rb"
+require IncludePath::PATH + "lib/db/follow.rb"
 require IncludePath::PATH + "lib/gen_sid.rb"
 require IncludePath::PATH + "lib/page_base.rb"
 
@@ -21,6 +22,12 @@ class SignUp < PageBase
                         newUser.delete_flag = 0
                         newUser.hash_password
                         newUser.insert
+                        newUser = newUser.find[0]
+                        follow = Follow.new
+                        follow.user_id = newUser.id
+                        follow.follow_user_id = newUser.id
+                        follow.delete_flag = 0
+                        follow.insert
                         request.session_options[:id] = GenerateSessionID.generate
                         request.session[Const::NEW_USER] = { "user_name" => post["user_name"], "password" => post["password"] }
                         response.redirect("/login/new/")

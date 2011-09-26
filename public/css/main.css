@@ -42,3 +42,9 @@ a:active
     float:right;
     padding:1em 0;
 }
+
+.search_box
+{
+    float:left;
+    padding:1em 0;
+}

@@ -30,6 +30,7 @@ class DataObject
         @column_names = Hash[*pair.flatten]
         @order_by_columns = []
         @join_tables = []
+        @like_columns = []
     end
 
     def get_table_name()
@@ -42,8 +43,16 @@ class DataObject
         return @column_names.length
     end
 
-    def order_by(column, order = "asc")
-        @order_by_columns.push(get_table_name + "." + column + " " + order)
+    def order_by(column, order = "asc", table_name = "")
+        if table_name.length > 0
+            @order_by_columns.push(table_name + "." + column + " " + order)
+        else
+            @order_by_columns.push(get_table_name + "." + column + " " + order)
+        end
+    end
+
+    def like(column, value)
+      @like_columns.push(get_table_name + "." + column + " like \"" + value + "%\"")
     end
 
     def find(count = 0, start = 0)
@@ -160,6 +169,29 @@ class DataObject
         @@db.query(query, data)
     end
 
+    def update_column(update_columns)
+        query = "update " + get_table_name + " set "
+        data = []
+        update_data = []
+        set = []
+        where = []
+        @columns.each do |col|
+            temp = self.instance_variable_get(col)
+            if (temp)
+                if (update_columns.index(@column_names[col]))
+                    set.push(@column_names[col] + " = ?")
+                    update_data.push(temp)
+                else
+                    where.push(@column_names[col] + " = ?")
+                    data.push(temp)
+                end
+            end
+        end
+
+        query += set.join(", ") + " where " + where.join(" and ")
+        @@db.query(query, update_data.concat(data))
+    end
+
     def get_select_query(count, start, get_column = "*")
         query = "select " + get_column + " from " + get_table_name
 
@@ -211,6 +243,9 @@ class DataObject
             if temp != nil
                 where.push(name + "." + @column_names[col] + " = ?")
             end
+        end
+        @like_columns.each do |l|
+            where.push(l)
         end
         return where.join(" and ")
     end

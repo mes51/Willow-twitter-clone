@@ -4,6 +4,7 @@
     </head>
     <body>
         <div class="outer_box">
+{#include:common/search_box.tpl#}
             <div class="old_post_link">
                 {#load:old_post#}
             </div>
@@ -12,6 +13,7 @@
             </div>
             <div class="bottom_box">
                 <div style="float:right;">
+                    <a href="/follow/{#user_name#}">フォロー・フォロー解除</a>
                 </div>
             </div>
         </div>

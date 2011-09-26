@@ -1,5 +1,6 @@
 require IncludePath::PATH + "lib/db/user.rb"
 require IncludePath::PATH + "lib/db/willow.rb"
+require IncludePath::PATH + "lib/db/follow.rb"
 require IncludePath::PATH + "lib/convert_jp_num.rb"
 
 module Util
@@ -61,6 +62,29 @@ module Util
           self.get_template_array(willow_array[0], user_array[0].user_name, user_array[0].screen_name)
         end
       end
+    end
+
+    def self.get_friend_willow(user_id, count, margin = 0, limit_start = 0)
+        follow = Follow.new
+        willow = Willow.new
+        follow.user_id = user_id
+        follow.delete_flag = 0
+        follow.left_join(willow, "follow_user_id", "user_id")
+        follow.left_join(User.new, "follow_user_id", "id")
+        follow.order_by("post_time", "desc", willow.get_table_name)
+        willow_array = []
+
+        follow.find(count + margin, limit_start).each do |f|
+            if (f[1].text)
+                willow_array << get_template_array(f[1], f[2].user_name, f[2].screen_name)
+            end
+        end
+
+        if (willow_array.length <= 0 && limit_start > count)
+            self.get_friend_willow(user_id, count, margin, follow.get_count - count)
+        else
+            willow_array
+        end
     end
 
     def self.get_template_array(w, user_name, screen_name)

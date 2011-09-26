@@ -3,4 +3,5 @@
         <meta http-equiv="X-UA-Compatible" content="IE=8 ; IE=9" />
         <link href="/css/main.css" media="screen" rel="stylesheet" type="text/css" />
 {#hash_array:common/css.tpl:css#}
+{#hash_array:common/js.tpl:js#}
         <title>{#page_title#} - witter</title>

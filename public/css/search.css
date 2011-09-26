@@ -1,0 +1,41 @@
+.search_outer_box
+{
+    margin:3em auto;
+    width:800px;
+}
+
+.search_top_box
+{
+    height:50px;
+}
+
+.search_block
+{
+    font-size:22pt;
+    min-width:800px;
+    max-width:800px;
+    width:800px;
+    border:thin solid black;
+}
+
+.other_search_link
+{
+    float:right;
+    padding:1em 0;
+}
+
+.search_title
+{
+    padding:0.5em 0.5em 0;
+    font-size:20pt;
+}
+
+.search
+{
+    padding:0.25em;
+}
+
+.search_user_name
+{
+    
+}

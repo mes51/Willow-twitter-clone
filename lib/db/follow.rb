@@ -6,6 +6,7 @@ class Follow < DataObject
         @user_id = nil
         @follow_user_id = nil
         @delete_flag = nil
+        super
     end
 
     attr_accessor :id
