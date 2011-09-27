@@ -14,7 +14,12 @@ module Util
         user.password = password
         user.delete_flag = 0
         user.hash_password
-        return user.find.length > 0
+        result = user.find
+        if result.length > 0
+            result[0]
+        else
+            nil
+        end
     end
 
     def self.get_willow(user_id, count, margin = 0, limit_start = 0, user_name = "", screen_name = "")
@@ -50,17 +55,13 @@ module Util
       willow = Willow.new
       willow.id = willow_id
       willow.delete_flag = 0
+      willow.left_join(User.new, "user_id", "id")
       willow_array = willow.find
 
       if willow_array.length > 0
-        user = User.new
-        user.id = willow_array[0].user_id
-        user.delete_flag = 0
-        user_array = user.find
-
-        if user_array.length > 0
-          self.get_template_array(willow_array[0], user_array[0].user_name, user_array[0].screen_name)
-        end
+        self.get_template_array(willow_array[0][0], willow_array[0][1].user_name, willow_array[0][1].screen_name)
+      else
+        nil
       end
     end
 

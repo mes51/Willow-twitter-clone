@@ -20,8 +20,9 @@ class Login < PageBase
         else
             post = request.POST
             if (post.length > 0)
-                if (Util.check_user(post["user_name"], post["password"]))
-                    redirect_after_login(post["user_name"], request, response)
+                user = Util.check_user(post["user_name"], post["password"])
+                if user
+                    redirect_after_login(user, request, response)
                     return
                 else
                     error = "ユーザーID、またはパスワードが違います"
@@ -40,13 +41,9 @@ class Login < PageBase
         response.write(template.to_s)
     end
 
-    def redirect_after_login(id, request, response)
-        user = User.new
-        user.user_name = id
-        user.delete_flag = 0
-        user = user.find
+    def redirect_after_login(user, request, response)
         request.session_options[:id] = GenerateSessionID.generate
-        request.session[Const::LOGIN_DATA] = { "user_name" => id, "screen_name" => user[0].screen_name, "id" => user[0].id }
+        request.session[Const::LOGIN_DATA] = { "user_name" => user.user_name, "screen_name" => user.screen_name, "id" => user.id }
         response.redirect("/home/")
     end
 end

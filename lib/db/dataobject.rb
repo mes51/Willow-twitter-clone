@@ -52,7 +52,7 @@ class DataObject
     end
 
     def like(column, value)
-      @like_columns.push(get_table_name + "." + column + " like \"" + value + "%\"")
+      @like_columns.push({ "column" => get_table_name + "." + column + " like ?", "value" => value + "%" })
     end
 
     def find(count = 0, start = 0)
@@ -245,7 +245,7 @@ class DataObject
             end
         end
         @like_columns.each do |l|
-            where.push(l)
+            where.push(l["column"])
         end
         return where.join(" and ")
     end
@@ -263,6 +263,9 @@ class DataObject
             if temp != nil
                 data.push(temp)
             end
+        end
+        @like_columns.each do |l|
+            data.push(l["value"])
         end
         return data
     end
