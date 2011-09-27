@@ -15,7 +15,7 @@ class Search < PageBase
     user = User.new
     user.like("user_name", params[1])
     user.delete_flag = 0
-    
+
     result_array = []
     user.find.each do |u|
       result_array.push({ "user_name" => u.user_name, "screen_name" => u.screen_name })

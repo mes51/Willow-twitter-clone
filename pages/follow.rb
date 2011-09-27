@@ -22,7 +22,7 @@ class Following < PageBase
       response.write("指定されたユーザーは存在しません")
       return
     end
- 
+
     user = user[0]
     post = request.POST
     if (post.length > 0)
@@ -41,9 +41,9 @@ class Following < PageBase
           end
           response.redirect("/home/")
         elsif post["action"] == "unfollow" && follow.length > 0 && follow[0][0].delete_flag == 0
-            follow[0][0].delete_flag = 1
-            response.write(follow[0][0].update_column(["delete_flag"]))
-            response.redirect("/home/")
+          follow[0][0].delete_flag = 1
+          response.write(follow[0][0].update_column(["delete_flag"]))
+          response.redirect("/home/")
         end
       end
     end
