@@ -1,5 +1,3 @@
-require 'cgi'
-
 class SimpleTemplate
   class SimpleTemplate::TemplateElement
     attr_accessor :marker
@@ -27,7 +25,7 @@ class SimpleTemplate
       if (replace == true)
         result.value = Marshal.load(Marshal.dump(@value))
       end
-      return result
+      result
     end
   end
 
@@ -106,7 +104,7 @@ class SimpleTemplate
     result.set_element(element)
     result.set_include_element(include_element)
     result.set_other_element(other_element)
-    return result
+    result
   end
 
   def replace(key, value, no_escape = false)
@@ -152,11 +150,11 @@ class SimpleTemplate
         end
       end
     end
-    return result
+    result
   end
 
   def get_marker_ref
-    return @marker
+    @marker
   end
   protected :get_marker_ref
 
@@ -212,6 +210,6 @@ class SimpleTemplate
     @include_element.each do |v|
       result = result.gsub("{#" + v.marker + "#}", v.include_template.to_s)
     end
-    return result
+    result
   end
 end

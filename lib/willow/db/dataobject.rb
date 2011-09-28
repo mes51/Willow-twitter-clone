@@ -1,5 +1,3 @@
-require IncludePath::PATH + 'lib/db/db_accessor'
-
 class DataObject
   class DataObject::JoinElement
     def initialize()
@@ -40,7 +38,7 @@ class DataObject
   end
 
   def get_column_length
-    return @column_names.length
+    @column_names.length
   end
 
   def order_by(column, order = "asc", table_name = "")
@@ -94,7 +92,7 @@ class DataObject
       end
     end
 
-    return ret_val
+    ret_val
   end
 
   def get_count(count = 0, start = 0)
@@ -120,7 +118,7 @@ class DataObject
       result = @@db.query(get_select_query(count, start, "count(*) as count"))
     end
 
-    return result.data[0][0]
+    result.data[0][0]
   end
 
   def left_join(da_obj, base_column, join_column)
@@ -229,9 +227,9 @@ class DataObject
     end
 
     if where.length > 0
-      return query + join +  " where " + where + order + limit
+      query + join +  " where " + where + order + limit
     else
-      return query + join + order + limit
+      query + join + order + limit
     end
   end
 
@@ -247,12 +245,12 @@ class DataObject
     @like_columns.each do |l|
       where.push(l["column"])
     end
-    return where.join(" and ")
+    where.join(" and ")
   end
   protected :get_where
 
   def get_order_by()
-    return @order_by_columns.join(", ")
+    @order_by_columns.join(", ")
   end
   protected :get_order_by
 
@@ -267,7 +265,7 @@ class DataObject
     @like_columns.each do |l|
       data.push(l["value"])
     end
-    return data
+    data
   end
   protected :get_data
 end

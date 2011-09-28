@@ -1,21 +1,8 @@
-require 'kconv'
-require 'find'
-
-require 'rack/request'
-require 'rack/response'
-
-require '../config/include_path.rb'
-require '../lib/const.rb'
-require '../lib/template.rb'
-require '../lib/util.rb'
-require '../lib/log.rb'
-
 class WillowApp
   def call(env)
     req = Rack::Request.new(env)
     res = Rack::Response.new
     p = req.params["args"].split("/")
-    Log.log("request: " + p.to_s)
     routing(p[0], p, req, res, env)
 
     res.finish
@@ -44,20 +31,20 @@ class WillowApp
     require require_file
     loader = DynamicLoader.new
 
-    if (loader.login_only)
+    if (loader.login_only?)
       if (!Util.check_login(request))
         response.redirect("/login/")
         return
       end
     end
 
-    if (loader.no_cache)
+    if (loader.no_cache?)
       response.header["Pragma"] = "no-cache"
       response.header["Cache-Control"] = "no-cache"
       response.header["Expires"] = "0"
     end
 
-    if (loader.clear_token && request.session_options[:id] && request.session_options[:id].length > 0)
+    if (loader.clear_token? && request.session_options[:id] && request.session_options[:id].length > 0)
       request.session[Const::POST_TOKEN] = ""
     end
 

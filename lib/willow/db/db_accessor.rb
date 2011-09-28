@@ -1,7 +1,3 @@
-gem 'mysql'
-require 'mysql'
-
-require IncludePath::PATH + 'lib/db/db_result'
 require IncludePath::PATH + 'config/db_config'
 
 class DBAccessor
@@ -29,6 +25,6 @@ class DBAccessor
       end
     end
 
-    return DBResult.new(row)
+    DBResult.new(row)
   end
 end

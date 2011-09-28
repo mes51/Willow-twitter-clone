@@ -1,8 +1,3 @@
-require IncludePath::PATH + "lib/db/user.rb"
-require IncludePath::PATH + "lib/db/willow.rb"
-require IncludePath::PATH + "lib/gen_sid.rb"
-require IncludePath::PATH + "lib/page_base.rb"
-
 class Login < PageBase
   def execute(params, request, response, env)
     error = ""
@@ -10,9 +5,12 @@ class Login < PageBase
       newUser = request.session[Const::NEW_USER]
       request.session[Const::NEW_USER] = nil
 
-      if (newUser != nil && Util.check_user(newUser["user_name"], newUser["password"]))
-        redirect_after_login(newUser["user_name"], request, response)
-        return
+      if (newUser != nil)
+        user = Util.check_user(newUser["user_name"], newUser["password"])
+        if user
+          redirect_after_login(user, request, response)
+          return
+        end
       end
     elsif (request.session[Const::LOGIN_DATA])
       response.redirect("/home/")

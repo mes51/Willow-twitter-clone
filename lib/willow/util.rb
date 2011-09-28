@@ -1,11 +1,6 @@
-Require IncludePath::PATH + "lib/db/user.rb"
-require IncludePath::PATH + "lib/db/willow.rb"
-require IncludePath::PATH + "lib/db/follow.rb"
-require IncludePath::PATH + "lib/convert_jp_num.rb"
-
 module Util
   def self.check_login(request)
-    return request.session[Const::LOGIN_DATA] != nil
+    request.session[Const::LOGIN_DATA] != nil
   end
 
   def self.check_user(id, password)
@@ -45,9 +40,9 @@ module Util
     end
 
     if (willow_array.length <= 0 && limit_start > count)
-      return self.get_willow(user_id, count, margin, willow.get_count - count, user_name, screen_name)
+      self.get_willow(user_id, count, margin, willow.get_count - count, user_name, screen_name)
     else
-      return willow_array
+      willow_array
     end
   end
 

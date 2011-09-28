@@ -1,8 +1,3 @@
-require 'securerandom'
-
-require IncludePath::PATH + "lib/db/willow.rb"
-require IncludePath::PATH + "lib/page_base.rb"
-
 class Post < PageBase
   def execute(params, request, response, env)
     if (params.length > 1 && params[1] == Const::POST_WILLOW)
@@ -27,20 +22,20 @@ class Post < PageBase
     response.write(template.to_s)
   end
 
-  def login_only
-    return true
+  def login_only?
+    true
   end
 
-  def no_cache
-    return true
+  def no_cache?
+    true
   end
 
-  def clear_token
-    return false
+  def clear_token?
+    false
   end
 
   def generate_token
-    return SecureRandom.hex(Const::TOKEN_LENGTH)
+    SecureRandom.hex(Const::TOKEN_LENGTH)
   end
 end
 

@@ -1,7 +1,3 @@
-require IncludePath::PATH + "lib/page_base.rb"
-require IncludePath::PATH + "lib/db/willow.rb"
-require IncludePath::PATH + "lib/db/user.rb"
-
 class Search < PageBase
   def execute(params, request, response, env)
     if params.length <= 1
@@ -31,7 +27,7 @@ class Search < PageBase
     response.write(template.to_s)
   end
 
-  def login_only
+  def login_only?
     true
   end
 end

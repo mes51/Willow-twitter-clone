@@ -1,8 +1,9 @@
 #!/usr/local/bin/ruby -Ku
 # coding: UTF-8
 
-require 'rubygems'
-require 'rack'
+require '../config/include_path.rb'
+
+require '../lib/willow.rb'
 
 require './main.rb'
 

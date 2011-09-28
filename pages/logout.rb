@@ -1,5 +1,3 @@
-require IncludePath::PATH + "lib/page_base.rb"
-
 class Logout < PageBase
   def execute(params, request, response, env)
     request.session[Const::LOGIN_DATA] = ""

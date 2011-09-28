@@ -1,11 +1,3 @@
-gem 'captcha'
-require 'captcha'
-
-require IncludePath::PATH + "lib/db/user.rb"
-require IncludePath::PATH + "lib/db/follow.rb"
-require IncludePath::PATH + "lib/gen_sid.rb"
-require IncludePath::PATH + "lib/page_base.rb"
-
 class SignUp < PageBase
   def execute(params, request, response, env)
     post = request.POST
@@ -67,11 +59,11 @@ class SignUp < PageBase
     c.clean_up_interval = 300
     c.clean
     c.image
-    return c
+    c
   end
 
-  def no_cache
-    return true
+  def no_cache?
+    true
   end
 end
 

@@ -1,5 +1,3 @@
-require IncludePath::PATH + '/lib/db/dataobject.rb'
-
 class Willow < DataObject
   def initialize()
     @id = nil
@@ -17,7 +15,7 @@ class Willow < DataObject
   attr_accessor :delete_flag
 
   def get_table_name
-    return "willow"
+    "willow"
   end
 
   def create_instance(data)
@@ -27,6 +25,6 @@ class Willow < DataObject
     result.text = data[2]
     result.post_time = data[3]
     result.delete_flag = data[4]
-    return result
+    result
   end
 end

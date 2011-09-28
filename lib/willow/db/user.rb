@@ -1,6 +1,3 @@
-require IncludePath::PATH + '/lib/db/dataobject.rb'
-require 'digest/sha2' 
-
 class User < DataObject
   def initialize()
     @id = nil
@@ -18,7 +15,7 @@ class User < DataObject
   attr_accessor :delete_flag
 
   def get_table_name
-    return "user"
+    "user"
   end
 
   def hash_password
@@ -32,6 +29,6 @@ class User < DataObject
     result.screen_name = data[2]
     result.password = data[3]
     result.delete_flag = data[4]
-    return result
+    result
   end
 end

@@ -1,5 +1,3 @@
-require IncludePath::PATH + '/lib/db/dataobject.rb'
-
 class Follow < DataObject
   def initialize()
     @id = nil
@@ -15,7 +13,7 @@ class Follow < DataObject
   attr_accessor :delete_flag
 
   def get_table_name
-    return "follow"
+    "follow"
   end
 
   def create_instance(data)
@@ -24,6 +22,6 @@ class Follow < DataObject
     result.user_id = data[1]
     result.follow_user_id = data[2]
     result.delete_flag = data[3]
-    return result
+    result
   end
 end

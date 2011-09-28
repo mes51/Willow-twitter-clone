@@ -1,6 +1,3 @@
-require IncludePath::PATH + "lib/page_base.rb"
-require IncludePath::PATH + "lib/db/user.rb"
-
 class UserInfo < PageBase
   def execute(params, request, response, env)
     if (params.length <= 1)

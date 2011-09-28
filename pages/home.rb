@@ -1,6 +1,3 @@
-require IncludePath::PATH + "lib/page_base.rb"
-require IncludePath::PATH + "lib/db/willow.rb"
-
 class Home < PageBase
   def execute(params, request, response, env)
     screen_name = request.session[Const::LOGIN_DATA]["screen_name"]
@@ -37,8 +34,8 @@ class Home < PageBase
     response.write(template.to_s)
   end
 
-  def login_only
-    return true
+  def login_only?
+    true
   end
 end
 

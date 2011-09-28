@@ -1,8 +1,3 @@
-require IncludePath::PATH + "lib/db/user.rb"
-require IncludePath::PATH + "lib/db/willow.rb"
-require IncludePath::PATH + "lib/gen_sid.rb"
-require IncludePath::PATH + "lib/page_base.rb"
-
 class Permanent < PageBase
   def execute(params, request, response, env)
     if params.length < 2

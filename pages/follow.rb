@@ -1,9 +1,3 @@
-require 'securerandom'
-
-require IncludePath::PATH + "lib/page_base.rb"
-require IncludePath::PATH + "lib/db/user.rb"
-require IncludePath::PATH + "lib/db/follow.rb"
-
 class Following < PageBase
   def execute(params, request, response, env)
     if params.length < 2
@@ -78,15 +72,15 @@ class Following < PageBase
     follow.find
   end
 
-  def login_only
+  def login_only?
     true
   end
 
-  def no_cache
+  def no_cache?
     true
   end
 
-  def clear_token
+  def clear_token?
     false
   end
 

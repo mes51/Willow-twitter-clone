@@ -6,7 +6,7 @@ class DBResult
   attr_reader :data
 
   def row_length
-    return @data.length
+    @data.length
   end
 
   def to_s
